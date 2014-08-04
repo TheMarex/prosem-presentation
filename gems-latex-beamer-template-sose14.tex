@@ -1,0 +1,43 @@
+%% Encoding: ISO8859-1 %%
+
+% Based on a LaTeX-Beamer template for KIT design by Erik Burger
+% and Christian Hammer with modifications by Christian Henrich
+% and Matthias Gabel, 2014; title picture from website
+% http://therainbowfarmer.wordpress.com/tag/gemstone-healing-benefits
+
+\documentclass[18pt]{beamer}
+\usetheme{kit}
+
+% Title of work
+\title{Title of work}
+\subtitle{Seminar ``Gems of Theoretical Computer Science''}
+% Author(s)
+\author{Firstname Lastname}
+% Institute
+\institute[ITI]{Institute of Theoretical Informatics}
+
+\begin{document}
+\selectlanguage{english}
+
+% Title page
+\begin{frame}
+ \titlepage
+\end{frame}
+
+% Table of contents
+\frame{
+ \frametitle{Outline}
+ \tableofcontents
+}
+
+% Include TITLE.tex
+\include{TITLE}
+
+% References
+\frame{
+ \frametitle{References}
+ \bibliography{literature}
+ \bibliographystyle{plain}
+}
+
+\end{document}
