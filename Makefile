@@ -5,6 +5,7 @@ ZIPNAME = gems-latex-beamer-template-sose14.zip
 .PHONY: clean
 
 pdf: *.tex *.bib
+	pandoc TITLE.md -t beamer --slide-level 2 -o TITLE.tex
 	pdflatex $(MASTER).tex
 	bibtex $(MASTER)
 	pdflatex $(MASTER).tex
