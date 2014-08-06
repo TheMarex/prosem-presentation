@@ -6,10 +6,10 @@ ZIPNAME = gems-latex-beamer-template-sose14.zip
 
 pdf: *.tex *.bib
 	pandoc TITLE.md -t beamer --slide-level 2 -o TITLE.tex
-	pdflatex $(MASTER).tex
+	lualatex $(MASTER).tex
 	bibtex $(MASTER)
-	pdflatex $(MASTER).tex
-	pdflatex $(MASTER).tex
+	lualatex $(MASTER).tex
+	lualatex $(MASTER).tex
 
 clean:
 	rm -f *.aux

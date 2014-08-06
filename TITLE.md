@@ -106,7 +106,7 @@ $UPATH$
 
 ## Universal Traversal Sequence
 
-* Route description that works on *all* (connected) d-regular Graphs of a certain size $n$
+* Route description that **visits all nodes** and works on **all** (connected) d-regular graphs of a certain size $n$
 
 * Example for $d = 3$ and $n = 4$:
 
@@ -175,42 +175,212 @@ Universal Traversal Sequence: $(1, 2, 3, 2, 1, 1, 2, 1, 3, 1, 2)$
 ## $NL \subseteq P$
 
 \begin{theorem}
-The running time of every log-space bounded turing machine is bounded by a polynominal.
+The running time of every decider for a problem in L or NL is bounded by a polynominal.
 \end{theorem}
 
-\begin{block}
-\visible<1-1>{
 \begin{itemize}
-\item Configuration: Position of input and working heads, current state of working tape, current state
-\item The possible positions of the input head are bounded by $n +c_1$
-\item The possible positions of the working head are bounded by $\log n + c_2$
-\item The possible states of the working tape are bounded by $\Gamma^{\log n + c} \in O(n^k)$
-\item The number of possible states (or sets of states) in constant with regard to the input size
-\item $(n + c_1) \cdot (\log n + c_2) \cdot n^k \in O(n^{k+2})$
+\item Configuration:
+	\[
+		c = (\overbrace{p_i}^{\text{input head position}}, \underbrace{p_w}_{\text{working head position}}, \overbrace{T}^{\text{tape state}}, \underbrace{q}_{\text{state(s)}})
+	\]
+\item Values for $p_i$ bounded by $n +c_1$
+\item Values for $p_w$ bounded by $\log n + c_2$
+\item Number of possible tape states $\Gamma^{\log n + c} \in O(n^k)$
+\item The number of possible states (or sets of states) is constant
+\item Possible configurations: $(n + c_1) \cdot (\log n + c_2) \cdot n^k \in O(n^{k+2})$
 \end{itemize}
-}
-\onslide<2->{
-Foo
-}
-\end{block}
+
+## $NL \subseteq P$
+
+\begin{theorem}
+The running time of every decider for a problem in L or NL is bounded by a polynominal.
+\end{theorem}
+
+\begin{itemize}
+\item Configuration:
+	\[
+		c = (\overbrace{p_i}^{\text{input head position}}, \underbrace{p_w}_{\text{working head position}}, \overbrace{T}^{\text{tape state}}, \underbrace{q}_{\text{state(s)}})
+	\]
+\item Construct \textbf{deterministic TM} for a fixed L or NL decider and compute \textbf{next configuration} until
+		a \textbf{halting state} is reached.
+\item Since the \textbf{number of configurations} is bounded by a polynom, the TM has also a \textbf{polynomially bounded} running time.
+\end{itemize}
+
+## NL-completeness
+
+* Similar to NP-completeness (just with a space-bound)
+
+* Use a decider for problem $A$ to decide any other problem $B$ in $NL$
+
+* We need a **transformation function** for instances of $B$ to $A$
+
+* Important: Transformation function should not be **too powerful**
+     
+     $\Rightarrow$ Transformation function should have logarithmic space bound in this case.
 
 ## PATH is NL-complete
 
-* Informal definition of NL-completeness:
-	- Transform instance of decision problem A to instance for B and use B to solve it
-	- Restrict power of transformation function
+\begin{theorem}
+	PATH is NL-complete.
+\end{theorem}
 
-* More precisely cover the transformation: TM -> configuration graph
-	- only log-bounded space needed to encode current configuration
-	- look at possible next configurations and write to output tape
-
-* Applying PATH to that should be trivial
+\begin{proof}
+\begin{itemize}
+	\item $PATH \in NL$: Non-deterministically \textbf{guess} a path (we have an upper bound on the \textbf{path length}, so we \textbf{always halt}).
+	\item Transform \textbf{decider} for $B$ into (directed!) \textbf{graph of configurations}
+	\item Add \textbf{single} \textit{accepting node} from all configurations that have an accepting state
+	\item Apply $PATH$ to check for a \textbf{path} from the \textit{start configuration} to the \textit{accepting node}
+\end{itemize}
+\end{proof}
 
 # RL and RandomWalk
 
-* Use RandomWalk to construct randomized decider for $UPATH$
+## RL
 
-* Show that it can not work for $PATH$
+* Deciders: Turing machines with \textbf{logarithmic space bound}, \textbf{polynomial running time} and capable of **random decisions**
+
+	$x \in A \Rightarrow Pr[M \text{ accepts } x] \geq \frac{1}{2}$
+
+	$x \not \in A \Rightarrow Pr[M \text{ accepts } x] = 0$
+
+* Important: Randomization $\not =$ Non-Determinism
+
+* But easy to see that $L \subseteq RL \subseteq NL$
+
+* We actually need the **polynominal running time** here, since randomization breaks our upper bound on running time
+
+## RandomWalk on UPATH
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\begin{algorithmic}
+\Require $(G, a, b)$
+\State $v \gets a$
+\For{$i \gets 1 \text{ to } p(n)$}
+	\State Randomly select a node $w$ that is adjacent to $v$
+	\State $v \gets w$
+	\If{$v = b$}
+		\State {\bf accept.}
+	\EndIf
+\EndFor
+\State {\bf reject.}
+\end{algorithmic}
+
+Note the polynom $p(n)$. We have to **find a polynom** that **guarantees** us to correctly
+accept with **probability of at least $\frac{1}{2}$** if $(G, a, b) \in UPATH$
+
+## RandomWalk does not solve PATH
+
+Example graph for $n=4$.
+
+\begin{center}
+\begin{tikzpicture}[line join=bevel]
+  \tikzstyle{vertex}=[circle,thick,fill=black!25,minimum size=12pt,inner sep=2pt]
+  \node[vertex, fill=red!25] (G_1) at (-2,0) {$a$};
+  \node[vertex] (G_2) at (0,0)  {$v_2$};
+  \node[vertex] (G_3) at (2,0)   {$v_3$};
+  \node[vertex, fill=blue!25] (G_4) at (4,0)   {$b$};
+  \draw [->] (G_1) -- (G_2);
+  \draw [->] (G_2) -- (G_3);
+  \draw [->] (G_3) -- (G_4);
+  \draw [->] (G_1) .. controls (-3.0, 0.5) and (-3.0, -0.5).. (G_1);
+  \draw [->] (G_2) .. controls (-1.0, -0.5) .. (G_1);
+  \draw [->] (G_3) .. controls (0.0, -0.75) .. (G_1);
+  \draw [->] (G_4) .. controls (2.0, -1.0) .. (G_1);
+\end{tikzpicture}
+\end{center}
+
+For graphs of this form the \textbf{expected number of steps} from \clr{red}{$a$} to \clr{blue}{$b$} is $2^n$.
+
+$\Rightarrow$ Exponential number of steps ($2^{n+1}$) needed for success probability of at least $\frac{1}{2}$!
+
+## Expected number of steps from $a$ to $b$
+
+\begin{block}{Important}
+We assume that $G$ is \textbf{connected} here, since we only care about
+the \textbf{number of steps} we need to take if \clr{red}{$a$} and \clr{blue}{$b$}
+actually are in the \textbf{same connected component}.
+\end{block}
+
+## Markov-Chains and RandomWalk
+
+Markov-Chain:
+
+* Chain of random variables $X_i$, that have the *markov property*
+* $X_i \in S$ models that we are in state $s \in S$ at step $i$
+* Distribution over states: Probability that we are in each state
+* Transition probabilities between states
+
+Model a *RandomWalk* on $G = (V, E)$ as Markov-Chain with *finite* states:
+
+* Nodes $V$ are the states
+
+* Transition probability for $u$ to $v$:
+	
+	$$ Pr[X_i = v | X_{i-1} = u] = \left\{
+	  \begin{array}{l l}
+		\frac{1}{d(u)} & \quad \text{if $v$ is adjacent to $u$}\\
+		0 & \quad \text{otherwise}
+	  \end{array} \right.
+	$$
+
+-------------------------------------------------------------------------------
+
+Graph and corresponding state space with transition probabilities.
+
+\begin{center}
+\begin{tikzpicture}[line join=bevel]
+  \tikzstyle{vertex}=[circle,thick,fill=black!25,minimum size=12pt,inner sep=2pt]
+  \node[vertex] (G_1) at (-2,0)  {$v_1$};
+  \node[vertex] (G_2) at (0,0)   {$v_2$};
+  \node[vertex] (G_3) at (2,0)   {$v_3$};
+  \node[vertex] (G_4) at (2,3)   {$v_4$};
+  \draw (G_1) -- (G_2);
+  \draw (G_2) -- (G_3);
+  \draw (G_2) -- (G_4);
+  \draw (G_3) -- (G_4);
+
+  \node[vertex] (H_1) at (4,0)  {$v_1$};
+  \node[vertex] (H_2) at (6,0)   {$v_2$};
+  \node[vertex] (H_3) at (8,0)   {$v_3$};
+  \node[vertex] (H_4) at (8,3)   {$v_4$};
+  \path (H_1) edge [->, bend left] node[above] {1} (H_2)
+        (H_2) edge [->] node[below] {$\frac{1}{3}$} (H_1)
+        (H_2) edge [->] node[above] {$\frac{1}{3}$} (H_3)
+        (H_3) edge [->, bend left] node[below] {$\frac{1}{2}$} (H_2)
+        (H_2) edge [->, bend left] node[left] {$\frac{1}{3}$} (H_4)
+        (H_4) edge [->] node[right] {$\frac{1}{2}$} (H_2)
+        (H_3) edge [->] node[left] {$\frac{1}{2}$} (H_4)
+        (H_4) edge [->, bend left] node[right] {$\frac{1}{2}$} (H_3);
+\end{tikzpicture}
+\end{center}
+
+## From Markov Chains to expected number of steps
+
+\begin{theorem}
+The expected number of steps $E(v, v)$ of a node $v \in V$ to reoccur is $\frac{2e}{d(v)}$,
+where $e = |E|$.
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+\item Proof that our markov chain is \textbf{irreducible} and \textbf{time-homogenous}.
+\item Proof that $\pi = (\frac{d(v_0)}{2e}, \cdots, \frac{d(v_n)}{2e})$ is the stationary distribution: $\pi = \pi \cdot P$
+\item Proof that if we choose the start node \textbf{uniformly distributed} we will converge on the stationary distribution.
+\item Expected number of steps before a state $v$ reoccures is $\frac{1}{\pi(v)} = \frac{2e}{d(v)}$
+\end{enumerate}
+\end{proof}
+
+## From Markov Chains to expected number of steps
+
+\begin{theorem}
+The expected number of steps $E(u, v)$ of an edge $\{u, v\} \in E$  to reoccur is less than $2e$.
+\end{theorem}
+
+\begin{proof}
+At node $u$ the probability to select $v$ is $\frac{1}{d(u)}$, the number of steps to get back at $u$ is $E(u, u)$.
+Thus $E(u, v) \leq E(u, u) \cdot \frac{1}{d(u)}$
+\end{proof}
 
 ## Proofing a bound on the number of steps
 
