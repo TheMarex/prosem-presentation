@@ -10,6 +10,13 @@
 \usepackage{tikz}
 \usepackage[english]{babel}
 \usetikzlibrary{snakes,arrows,shapes}
+\tikzset{
+  invisible/.style={opacity=0},
+    visible on/.style={alt={#1{}{invisible}}},
+    alt/.code args={<#1>#2#3}{%
+      \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+    },
+}
 
 % Title of work
 \title{LOGSPACE, RandomWalks on Graphs and Universal Traversal Sequences}
@@ -32,6 +39,8 @@
  \frametitle{Outline}
  \tableofcontents
 }
+
+\newcommand{\clr}[2]{{\color{#1} #2}}
 
 % Include TITLE.tex
 \include{TITLE}
