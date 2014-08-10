@@ -42,7 +42,7 @@ $UPATH$
 
 ## $UPATH$ vs. $PATH$
 
-* Seem similar, but can be used to charaterize the space complexity classes $L$ and $NL$
+* Seem similar, but can be used to characterize the space complexity classes $L$ and $NL$
 
 * Using *randomization* we can solve $UPATH$ without non-determinism only using logarithmic bounded space
 
@@ -79,6 +79,7 @@ $UPATH$
         (1) edge [->, bend left, orange, visible on=<4-4>]  (2)
         (1) edge [->, bend right, orange, visible on=<4-4>]  (3)
         (1) edge [->, orange, visible on=<4-4>]  (b)
+        (1) edge [->, bend left, orange, visible on=<4-4>]  (a)
 
         (3) edge [->, loop, orange, visible on=<6-7>]  (3)
         (3) edge [->, bend left, orange, visible on=<6-7>]  (1)
@@ -86,6 +87,7 @@ $UPATH$
 
         (1) edge [->, bend left, orange, visible on=<9-9>]  (2)
         (1) edge [->, bend right, orange, visible on=<9-9>]  (3)
+        (1) edge [->, bend left, orange, visible on=<9-9>]  (a)
         (1) edge [->, orange, visible on=<9-9>]  (b);
 
   \node[visible on=<1->, vertex, fill=blue!25] (a) at (0,-2)  {a};
@@ -146,7 +148,7 @@ Universal Traversal Sequence: $(1, 2, 3, 2, 1, 1, 2, 1, 3, 1, 2)$
 ## Space-Complexity classes L and NL
 * Input already occupies $n$ cells.
 
-* Seperate space usage of input/output from computation
+* Separate space usage of input/output from computation
 
 * We need a different turing machine model, with 3 tapes:
 	- 1 read-only input tape
@@ -161,7 +163,7 @@ Universal Traversal Sequence: $(1, 2, 3, 2, 1, 1, 2, 1, 3, 1, 2)$
 
 * As with $P = NP$, $L = NL$ is also still unknown
 
-## Examples for problems that can be solved in $L$
+## Problems solvable with logarithmic space bound
 
 \begin{description}
   \item[\textit{Counting all occurences of a symbol in the input}] \hfill \\
@@ -175,7 +177,7 @@ Universal Traversal Sequence: $(1, 2, 3, 2, 1, 1, 2, 1, 3, 1, 2)$
 ## $NL \subseteq P$
 
 \begin{theorem}
-The running time of every decider for a problem in L or NL is bounded by a polynominal.
+The running time of every decider for a problem in L or NL is bounded by a polynomial.
 \end{theorem}
 
 \begin{itemize}
@@ -194,20 +196,13 @@ $$
 		a \textbf{halting state} is reached.
 \end{itemize}
 
-## NL-completeness
-
-* Similar to NP-completeness (just with a space-bound)
-
-* Use a decider for problem $A$ to decide any other problem $B$ in $NL$
-
-* We need a **transformation function** for instances of $B$ to $A$
-
-* Transformation function needs a logarithmic space bound as well
-
 ## PATH is NL-complete
 
+**NL-completeness:**
+  ~ Solve any problem in NL using a logarithmically bounded transformation function
+
 \begin{theorem}
-	PATH is NL-complete.
+	PATH is NL-complete. \cite{DBLP:books/daglib/0094933}
 \end{theorem}
 
 \begin{proof}
@@ -223,7 +218,7 @@ $$
 
 ## RL
 
-* Deciders: Turing machines with \textbf{logarithmic space bound}, \textbf{polynomial running time} and capable of **random decisions**
+* Decider: Turing machine with \textbf{logarithmic space bound}, \textbf{polynomial running time} and capable of **random decisions**
 
 	$x \in A \Rightarrow Pr[M \text{ accepts } x] \geq \frac{1}{2}$
 
@@ -233,7 +228,7 @@ $$
 
 * But easy to see that $L \subseteq RL \subseteq NL$
 
-* We actually need the **polynominal running time** here, since randomization breaks our upper bound on running time
+* We actually need the **polynomial running time** here, since randomization breaks our upper bound on running time
 
 ## $UPATH \in RL$, RandomWalk
 
@@ -256,7 +251,7 @@ $UPATH \in RL$
 \State {\bf reject.}
 \end{algorithmic}
 
-Find a **polynom** \clr{green!80!black}{$p(n)$} that **guarantees** us to correctly
+Find a **polynomial** \clr{green!80!black}{$p(n)$} that **guarantees** us to correctly
 accept with **probability of at least $\frac{1}{2}$** if $(G, a, b) \in UPATH$
 
 ## RandomWalk does not solve PATH
@@ -385,7 +380,7 @@ where $e = |E|$.
 \begin{proof}
 \begin{enumerate}
 \item Proof that our markov chain is \textbf{irreducible} and \textbf{time-homogenous}.
-\item Proof that $\pi = (\frac{d(v_0)}{2e}, \cdots, \frac{d(v_n)}{2e})$ is the stationary distribution: $\pi = \pi \cdot P$
+\item Proof that $\pi = (\frac{d(v_0)}{2e}, \cdots, \frac{d(v_n)}{2e})$ is the stationary distribution \cite{aleliunas1979random}: $\pi = \pi \cdot P$
 \item Proof that if we choose the start node \textbf{uniformly distributed} we will converge on the stationary distribution.
 \item Expected number of steps before a state $v$ reoccures is $\frac{1}{\pi(v)} = \frac{2e}{d(v)}$
 \end{enumerate}
@@ -442,7 +437,7 @@ $$
 
 Probability amplification:
 
-* Repeat multiple times to increase propability that we did visit all nodes
+* Repeat multiple times to increase probability that we did visit all nodes
 * Probability that we did not visit all nodes after $m$ tries: $2^{-m}$
 * Length of random walk $8en \cdot m$
 * Probability increases **exponential** for **polynomial** increase in length
@@ -459,9 +454,9 @@ Probability amplification:
 
 * Idea: Make $m$ big enough that the probability of a given traversal sequences to work for all graphs is bigger than 0:
 
-If $F$ is the number of for which a traversal sequence does not work.
+Let $F$ be the number of graphs for which a traversal sequence does not visit all nodes.
 
-$E(F) = g_{n, d} \cdot 2^{-m} < 1$, thus:
+Choose $m$ so that: $E(F) = g_{n, d} \cdot 2^{-m} < 1$
 
 $$
 \left.
@@ -473,4 +468,10 @@ $$
 \right\}
 \text{Works for } m > \log_2 n \cdot nd
 $$
+
+-------------------------------------------------------------------------------
+
+\begin{block}
+{\huge Questions?}
+\end{block}
 
