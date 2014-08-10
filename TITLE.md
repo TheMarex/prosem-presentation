@@ -183,27 +183,15 @@ The running time of every decider for a problem in L or NL is bounded by a polyn
 	\[
 		c = (\overbrace{p_i}^{\text{input head position}}, \underbrace{p_w}_{\text{working head position}}, \overbrace{T}^{\text{tape state}}, \underbrace{q}_{\text{state(s)}})
 	\]
-\item Values for $p_i$ bounded by $n +c_1$
-\item Values for $p_w$ bounded by $\log n + c_2$
-\item Number of possible tape states $\Gamma^{\log n + c} \in O(n^k)$
-\item The number of possible states (or sets of states) is constant
-\item Possible configurations: $(n + c_1) \cdot (\log n + c_2) \cdot n^k \in O(n^{k+2})$
-\end{itemize}
-
-## $NL \subseteq P$
-
-\begin{theorem}
-The running time of every decider for a problem in L or NL is bounded by a polynominal.
-\end{theorem}
-
-\begin{itemize}
-\item Configuration:
-	\[
-		c = (\overbrace{p_i}^{\text{input head position}}, \underbrace{p_w}_{\text{working head position}}, \overbrace{T}^{\text{tape state}}, \underbrace{q}_{\text{state(s)}})
-	\]
+\item Number of possible configurations:
+$$
+\begin{array}{rcl}
+n_{p_i} \cdot n_{p_w} \cdot n_T \cdot n_q & = & (n + c_1) \cdot (\log n + c_2) \cdot \Gamma^{\log n + c} \cdot c_q \\
+                                          & < & (n + c_1) \cdot (\log n + c_2) \cdot n^k \in O(n^{k+2}) \\
+\end{array}
+$$
 \item Construct \textbf{deterministic TM} for a fixed L or NL decider and compute \textbf{next configuration} until
 		a \textbf{halting state} is reached.
-\item Since the \textbf{number of configurations} is bounded by a polynom, the TM has also a \textbf{polynomially bounded} running time.
 \end{itemize}
 
 ## NL-completeness
@@ -214,9 +202,7 @@ The running time of every decider for a problem in L or NL is bounded by a polyn
 
 * We need a **transformation function** for instances of $B$ to $A$
 
-* Important: Transformation function should not be **too powerful**
-     
-     $\Rightarrow$ Transformation function should have logarithmic space bound in this case.
+* Transformation function needs a logarithmic space bound as well
 
 ## PATH is NL-complete
 
@@ -249,14 +235,18 @@ The running time of every decider for a problem in L or NL is bounded by a polyn
 
 * We actually need the **polynominal running time** here, since randomization breaks our upper bound on running time
 
-## RandomWalk on UPATH
+## $UPATH \in RL$, RandomWalk
+
+\begin{theorem}
+$UPATH \in RL$
+\end{theorem}
 
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \begin{algorithmic}
 \Require $(G, a, b)$
 \State $v \gets a$
-\For{$i \gets 1 \text{ to } p(n)$}
+\For{$i \gets 1$ to \clr{green!80!black}{$p(n)$}}
 	\State Randomly select a node $w$ that is adjacent to $v$
 	\State $v \gets w$
 	\If{$v = b$}
@@ -266,7 +256,7 @@ The running time of every decider for a problem in L or NL is bounded by a polyn
 \State {\bf reject.}
 \end{algorithmic}
 
-Note the polynom $p(n)$. We have to **find a polynom** that **guarantees** us to correctly
+Find a **polynom** \clr{green!80!black}{$p(n)$} that **guarantees** us to correctly
 accept with **probability of at least $\frac{1}{2}$** if $(G, a, b) \in UPATH$
 
 ## RandomWalk does not solve PATH
@@ -290,9 +280,24 @@ Example graph for $n=4$.
 \end{tikzpicture}
 \end{center}
 
-For graphs of this form the \textbf{expected number of steps} from \clr{red}{$a$} to \clr{blue}{$b$} is $2^n$.
+For graphs of this form the \textbf{expected number of trials} $E(T)$ before we reach \clr{blue}{$b$} starting at \clr{red}{$a$} is $2^{n}$.
 
-$\Rightarrow$ Exponential number of steps ($2^{n+1}$) needed for success probability of at least $\frac{1}{2}$!
+$$
+\left.
+\begin{array}{rcl}
+\frac{1}{2} & = & Pr[T < x] \\
+            & = & 1 - Pr[T \geq 2^k] \\
+            & \leq & 1 - \frac{E(T)}{x} \\
+            & = & 1 - \frac{2^n}{x} \\
+\frac{2^n}{x} & \leq & \frac{1}{2} \\
+x & \geq & 2^{n+1} \\
+\end{array}
+\right\}
+\begin{array}{l}
+\text{At least } 2^{n+1} \text{ steps}\\
+\text{needed for correct RL decider.}
+\end{array}
+$$
 
 ## Expected number of steps from $a$ to $b$
 
@@ -355,6 +360,21 @@ Graph and corresponding state space with transition probabilities.
 \end{tikzpicture}
 \end{center}
 
+$$
+\nu = (1, 0, 0, 0), 
+P =
+\begin{pmatrix}
+0 & 1 & 0 & 0 \\
+\frac{1}{3} & 0 & \frac{1}{3} & \frac{1}{3} \\
+0 & \frac{1}{2} & 0 & \frac{1}{2} \\
+0 & \frac{1}{2} & \frac{1}{2} & 0 \\
+\end{pmatrix},
+\begin{matrix}
+\nu  \cdot P & = & (0, 1, 0, 0) \\
+\nu \cdot P^2 & = & (\frac{1}{3}, 0, \frac{1}{3}, \frac{1}{3}) \\
+\end{matrix}
+$$
+
 ## From Markov Chains to expected number of steps
 
 \begin{theorem}
@@ -374,40 +394,83 @@ where $e = |E|$.
 ## From Markov Chains to expected number of steps
 
 \begin{theorem}
-The expected number of steps $E(u, v)$ of an edge $\{u, v\} \in E$  to reoccur is less than $2e$.
+The expected number of steps $E(a, G)$ to reach all nodes in G starting at a node $a$ is less than $4 \cdot e \cdot n$.
 \end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+\item The expected number of steps $E(u, v)$ of an edge $\{u, v\} \in E$ to reoccur is less than $2e$:
+      $E(u, v) \leq E(u, u) \cdot \frac{1}{d(u)}$
+\item There is always a path of length at most $2n$ that visits all nodes.
+\end{enumerate}
+From that we can estimate $E(a, G)$ with a path $(v_1, \dots, v_k)$ ($k \leq 2n$) that visits all nodes in $G$:
+$$
+E(a, G) \leq \sum_{i=1}^{k} E(v_{i-1}, v_i) < 2n \cdot 2e = 4en
+$$
+\end{proof}
 
 \begin{proof}
 At node $u$ the probability to select $v$ is $\frac{1}{d(u)}$, the number of steps to get back at $u$ is $E(u, u)$.
 Thus $E(u, v) \leq E(u, u) \cdot \frac{1}{d(u)}$
 \end{proof}
 
-## Proofing a bound on the number of steps
+## From Markov Chains to expected number of steps
 
-* Short example of Markov-Chain
-* Relation to RandomWalk: Important connected graph
-* RandomWalk can be modeled as Markov-Chain (Markov Property)
+\begin{theorem}
+The probability to reach \clr{blue}{$b$} from \clr{red}{$a$} using $8en$ steps is higher than $\frac{1}{2}$.
+\end{theorem}
 
-* Derive expected length of a random walk starting at any node $a$ to reach any other node $b$:
-	We proof an upper bound: Expected number of steps to visit all nodes in G.
-
-* Overview:
-  - First compute $P_v$ and thus $E(v, v)$
-  - Compute upper bound for $E(u, v)$
-  - Compute upper bound for $E(a, G)$
-  - Apply Markov-Inequality to compute probaboility that we need more than 8*e*n steps.
+\begin{proof}
+Let $T(a, b)$ be the number of steps from $a$ to $b$.
+$$
+Pr[T(a, b) \geq 8en] < \frac{E(a, b)}{8en}
+                     < \frac{E(a, G)}{8en}
+                     < \frac{4en}{8en} = \frac{1}{2}
+$$
+$$
+Pr[T(a, b) < 8en] = 1 - Pr[T(a, b) \geq 8en]
+                  < 1 - \frac{1}{2} = \frac{1}{2}
+$$
+\end{proof}
 
 # Universal Traversal Sequences
 
-## d-regular graphs
+## RandomWalk $\leftrightarrow$ Universal Traversal Sequence
 
-* Definition
-* Number of d-regular graphs of size n
-* Traversal sequences and random walks
+* From the $UPATH \in RL$ proof: $E(a, G) \leq 8en$
+* After $E(a, G)$ steps the probability to **not** visit all nodes is less than $\frac{1}{2}$
 
-## Probability amplification
+Probability amplification:
 
-* Conduct $m$ random walks, probability of not finding a path is $2^{-m}$, but size only $8en \cdot m$
-* Make $m$ big enough that the probability of a given traversal sequences to work for all graphs is bigger than 0:
-	- Again markov inequality: $E(F) = g_{n, d} \cdot 2^{-m} < 1$, thus:
-	   $1 - Pr[F < 1] = Pr[F \geq 1] \leq E(F) / 1$ < 1 which results in $0 < Pr[F < 1]$
+* Repeat multiple times to increase propability that we did visit all nodes
+* Probability that we did not visit all nodes after $m$ tries: $2^{-m}$
+* Length of random walk $8en \cdot m$
+* Probability increases **exponential** for **polynomial** increase in length
+
+## On d-regular Graphs
+
+* $d$-regular Graph: Each node has degree $d$.
+
+* Traversal sequence: $(i_1, ... , i_k), i_j \in \{0, \dots, d-1\}$
+
+* RandomWalk in d-regular graph: Choose $i_j$ uniformly distributed
+
+* There are less than $n^{n \cdot d} =: g_{n,d}$ $d$-regular graphs of size n.
+
+* Idea: Make $m$ big enough that the probability of a given traversal sequences to work for all graphs is bigger than 0:
+
+If $F$ is the number of for which a traversal sequence does not work.
+
+$E(F) = g_{n, d} \cdot 2^{-m} < 1$, thus:
+
+$$
+\left.
+\begin{array}{rcl}
+1 - Pr[F < 1] & = & Pr[F \geq 1] \\
+              & \leq & \frac{E(F)}{1} < 1 \\
+\Rightarrow 0 & < & Pr[F < 1] \\
+\end{array}
+\right\}
+\text{Works for } m > \log_2 n \cdot nd
+$$
+
